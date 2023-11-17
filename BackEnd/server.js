@@ -25,12 +25,13 @@ const mongoose = require('mongoose');
 
 main().catch(err => console.log(err));
 
+//async function
 async function main() {
   await mongoose.connect('mongodb+srv://admin:admin@cluster0.1lnehjk.mongodb.net/MYDB?retryWrites=true&w=majority');
 
   // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
 }
-
+//book schema used for mongodb
 const bookSchema = new mongoose.Schema({
   title:String,
   cover:String,
@@ -47,6 +48,7 @@ app.post('/api/book', (req,res)=>{
     cover:req.body.cover,
     author:req.body.author
   })
+  //then and catch 
     .then(()=>{res.send("Book Created")})
     .catch(()=>{res.send("Book Not Created")})
     
