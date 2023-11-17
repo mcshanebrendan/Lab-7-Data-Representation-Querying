@@ -19,64 +19,58 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+//mongoose code recieved from lab 7 pdf 
+// getting-started.js
+const mongoose = require('mongoose');
+
+main().catch(err => console.log(err));
+
+async function main() {
+  await mongoose.connect('mongodb+srv://admin:admin@cluster0.1lnehjk.mongodb.net/MYDB?retryWrites=true&w=majority');
+
+  // use `await mongoose.connect('mongodb://user:password@127.0.0.1:27017/test');` if your database has auth enabled
+}
+
+const bookSchema = new mongoose.Schema({
+  title:String,
+  cover:String,
+  author:String
+})
+
+//creates book model
+const bookModel = mongoose.model('brendans_books', bookSchema);
 
 app.post('/api/book', (req,res)=>{
     console.log(req.body);
-    res.send("Book Created")
+  //creates book in mongo
+    bookModel.create({title:req.body.title,
+    cover:req.body.cover,
+    author:req.body.author
+  })
+    .then(()=>{res.send("Book Created")})
+    .catch(()=>{res.send("Book Not Created")})
+    
 })
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.get('/api/books', (req, res)=>{
-    
-const data = [
-    {
-    "title": "Learn Git in a Month of Lunches",
-    "isbn": "1617292419",
-    "pageCount": 0,
-    "thumbnailUrl":
-    "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/umali.jpg", "status": "MEAP",
-    "authors": ["Rick Umali"],
-    "categories": []
-    },
-    {
-    "title": "MongoDB in Action, Second Edition",
-    "isbn": "1617291609",
-    "pageCount": 0,
-    "thumbnailUrl":
-    "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/banker2.jpg",
-    "status": "MEAP",
-    "authors": [
-    "Kyle Banker",
-    "Peter Bakkum",
-    "Tim Hawkins",
-    "Shaun Verch",
-    "Douglas Garrett"
-    ],
-    "categories": []
-    },
-    {
-    "title": "Getting MEAN with Mongo, Express, Angular, and Node",
-    "isbn": "1617292036",
-    "pageCount": 0,
-    "thumbnailUrl":
-    "https://s3.amazonaws.com/AKIAJC5RLADLUMVRPFDQ.book-thumb-images/sholmes.jpg",
-    "status": "MEAP",
-    "authors": ["Simon Holmes"],
-    "categories": []
-    }
-    ];
+//asynchronous method
+app.get('/api/books', async(req, res)=>{
 
-    res.json({
-        myBooks:data,
-        "MyMessage":"Hello Data"
-    }) 
+  let books = await bookModel.find({});
+  res.json(books);
 
 })
+//async method
+//specifies book by id
+app.get('/api/book/:id', async(req, res)=>{
+console.log(req.params.id);
 
-
+let book = await bookModel.findById(req.params.id);
+res.send(book);
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)

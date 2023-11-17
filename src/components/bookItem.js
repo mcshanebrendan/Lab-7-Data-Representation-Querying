@@ -1,16 +1,19 @@
 import Card from 'react-bootstrap/Card';
 
 function BookItem(props) {
+    
+    //Below I changed some code to match with my new server.js code
 
     return (
+        
         <div>
             <Card>
                 <Card.Header>{props.myBook.title}</Card.Header>
                 <Card.Body>
                     <blockquote className="blockquote mb-0">
-                        <img src={props.myBook.thumbnailUrl}></img>
+                        <img src={props.myBook.cover}></img>
                         <footer>
-                            {props.myBook.authors[0]}
+                            {props.myBook.author}
                         </footer>
                     </blockquote>
                 </Card.Body>
